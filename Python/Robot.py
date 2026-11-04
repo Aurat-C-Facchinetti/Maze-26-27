@@ -1,11 +1,11 @@
 import time
 import serial
-from Coordinata import Coordinata
+from Coordinate import Coordinate
 
 
 class Robot:
     def __init__(self):
-        self.coordinata = Coordinata()
+        self.coordinata = Coordinate()
         self.seriale = None
         self.gradi = 0
 
@@ -73,6 +73,21 @@ class Robot:
         elif self.gradi == 270:
             return (-1,0)
 
+    def trova_muro(self, par_tof, par_dir):
+        self.seriale.write(par_tof.encode())
+        if self.checkCommand():
+            is_wall = -1
+            while is_wall == -1:
+                is_wall = int(self.seriale.readline().decode('utf-8').rstrip())
+                print("is_wall", is_wall)
+            return is_wall
 
 
+    def checkInclinazione(self):
+        self.seriale.write(b'i,')
+        if self.checkCommand():
+            inclination = 999
+            while inclination == 999:
+                inclination = float(self.seriale.readline().decode('utf-8').rstrip())
+            return inclination
 
